@@ -1,0 +1,2 @@
+-- insert query
+db.User.insert({first_name:"Vatsal",last_name:"Rathod",email:"vrathod@uncc.edu",password:"123456",address:"Mira Road",usertype:"Donor"});
