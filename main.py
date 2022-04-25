@@ -189,7 +189,7 @@ def webhook():
     try:
       # print('Hello')
       s = SMTP('smtp.gmail.com', 465)
-      s.login("realmonster7777@gmail.com", "youmonster")
+      s.login("realmonster7777@gmail.com", "")
       msg = EmailMessage()
       message_content = 'Pantry Location : '+location_name+'\n'+'date :'+dt
       msg.set_content(message_content)
