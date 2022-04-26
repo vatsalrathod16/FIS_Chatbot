@@ -1,0 +1,134 @@
+import streamlit as st
+import hashlib
+import streamlit.components.v1 as components
+
+from pymongo import MongoClient
+
+client = MongoClient('mongodb+srv://FISChatbot:ZMdaSTA6jkBqKmBo@clusterfis.cd6hr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
+mydb1 = client["FIS_Chatbot"]
+# db = mydb1['users']
+
+def login_user(username,p):
+	mydb = mydb1.User		
+	login_user = mydb.find_one({'email' : username})
+	# print(login_user['password'])
+	if login_user:
+		if login_user['password']==p:
+			return True
+	return False
+
+def Signup(new_user, new_password, customer_type, cust_number, f_name, l_name, address):
+		mydb = mydb1.User		
+		z=[i for i in mydb.find({'name' : new_user})]
+		if len(z)<1:
+			mydict = {"email": new_user, "password": new_password, "usertype": customer_type, "Number": cust_number, "first_name": f_name, "last_name": l_name, "address":address }
+			x = mydb.insert_one(mydict)
+			return True
+		return False	
+
+		# cursor = mydb.find()
+		# for record in cursor:
+		#     print(record)
+
+
+def homepage():
+	# st.markdown("<h1 style='text-align: center; color: white;'>Corelation Visualizer using Knowledge Graph</h1>")
+	st.markdown("<h1 style='text-align: center; color: white;'>Corelation Visualiser using Knowledge Graph</h1>", unsafe_allow_html=True)
+	st.markdown("<p style='text-align: center; color: grey;'>A knowledge graph, also known as a semantic network, represents a network of real-world entities—i.e. objects, events, situations, or concepts—and illustrates the relationship between them. This information is usually stored in a graph database and visualized as a graph structure, prompting the term knowledge “graph.”</p><p style='text-align: center; color: grey;'>The webapp visualizes the corelation between 2 user enetered components with the help of a user-interactive knowledge graph and heat map. To use the visualiser, select the visualize option from the drop down. You can even add your own data, by creating an account! </p>", unsafe_allow_html=True)
+
+
+def main():
+
+	menu = ["Home","Login","SignUp", "Visualize"]
+	choice = st.sidebar.selectbox("",menu)
+
+	if choice == "Home":
+		homepage()
+		st.sidebar.markdown("<p style='text-align: justify; color: grey;'>This is a webapp built on Streamlit to perform analysis of data based on corelation. On the backend, the app uses the sqlite3 to store user-input bivariate data, and then it generates relevent graphs using the networkx, seaborn and matplotlib libraries.</p>", unsafe_allow_html=True)
+		st.sidebar.markdown("<p style='text-align: left; color: white;'>Stack Used</p>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>Python</li>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>StreamLit</li>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>Sqlite3</li>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>Pandas</li>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>Seaborn</li>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>Networkx</li>", unsafe_allow_html=True)
+		st.sidebar.markdown("<li style='text-align: left; color: grey;'>Matplotlib</li>", unsafe_allow_html=True)
+
+	elif choice == "Login":
+		username = st.sidebar.text_input("Enter Email")
+		password = st.sidebar.text_input("Enter Password",type='password')
+		if st.sidebar.checkbox("Login"):
+			# st.markdown("<h1 style='text-align: center; color: white;'>Welcome!!</h1>", unsafe_allow_html=True)
+			result = login_user(username,password)
+			if result:
+				st.balloons()
+				mydb = mydb1.User
+				_user = mydb.find_one({'email' : username})
+				st.write("Welcome", _user['first_name'])
+				st.write("Your current Location is: ", _user['address'])
+				st.write("Welcome")
+				v()
+				# st.button()
+
+			else:
+				st.sidebar.warning("Incorrect Email/Password")
+
+	elif choice == "SignUp":
+		st.markdown("<h1 style='text-align: center; color: white;'>Create New Account</h1>", unsafe_allow_html=True)
+		with st.form("my_form"):
+			c1, c2, c3=st.columns(3)
+			with c1:
+				f_name=st.text_input("First Name")
+			with c2:
+				l_name=st.text_input("Last Name")
+			with c3:
+				customer_type=st.selectbox("Select type: ", ['Donor', 'Reciever'])
+			c4, c5=st.columns(2)
+			with c4:
+				new_user = st.text_input("Enter Email")
+			with c5:
+				cust_number=st.text_input("Enter Phone Number")
+			address=st.text_input("Enter address")
+
+			new_password = st.text_input("Password",type='password')
+			cnfrm=st.text_input("Confirm Password", type='password')
+
+			if st.form_submit_button("Signup"):
+				# if is_email(new_user, check_dns=True):
+					if len(f_name) < 1 or len(l_name)<1 or len(customer_type)<1 or len(new_user)< 1 or len(address)<1:
+						st.sidebar.warning("Enter all fields")
+					elif new_password != cnfrm:
+						st.sidebar.warning("Passwords don't match")
+					elif Signup(new_user, new_password, customer_type, cust_number, f_name, l_name, address):
+						st.success("You have successfully created a valid Account")
+						st.info("Go to Login Menu to login")
+					else:
+						st.sidebar.warning("Already in use")
+
+def v():
+# 	components.html('''
+# 		<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+# <df-messenger
+#   intent="WELCOME"
+#   chat-title="add"
+#   agent-id="a2da2733-2172-49f4-924a-e2d34bfc1e6a"
+#   language-code="en"
+# ></df-messenger>
+# 		''',
+# 		height=700
+# )	
+
+	components.html(
+	'''
+	<script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+<df-messenger
+  intent="WELCOME"
+  chat-title="FIS_CHATBOT"
+  agent-id="7bfc1290-a60c-45d2-823a-9937b55a53e1"
+  language-code="en"
+></df-messenger>
+	''',
+	height=700
+	)
+
+main()
