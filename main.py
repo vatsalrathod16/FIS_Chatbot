@@ -8,20 +8,6 @@ from smtplib import SMTP_SSL as SMTP
 from email.message import EmailMessage
 
 
-
-
-'''firebaseConfig = {"apiKey": "AIzaSyDxHLOgqjQeYUnniDeMI4gsNZWS-Y3XQ1s",
-    "authDomain": "fisfirebasedb.firebaseapp.com",
-    "projectId": "fisfirebasedb",
-    "storageBucket": "fisfirebasedb.appspot.com",
-    "messagingSenderId": "81643804817",
-    "appId": "1:81643804817:web:300757ad8a36c423b90730",
-    "measurementId": "G-7KCX675SD7",
-    "databaseURL":"https://fisfirebasedb-default-rtdb.firebaseio.com/"}'''
-
-# data = {"name" : "John", "age":20}
-# db.push(data)
-
 client = pymongo.MongoClient('mongodb+srv://FISChatbot:ZMdaSTA6jkBqKmBo@clusterfis.cd6hr.mongodb.net/myFirstDatabase?retryWrites=true&w=majority')
 db = client['FIS_Chatbot']
 
